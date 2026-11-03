@@ -11,7 +11,7 @@
 // getPatternAsImages() returns an array of p5.Image objects for each unique pattern
 
 class WaveFunctionCollapse {
-  constructor(sourceImg, n, outputW, outputH, allowRotations = false, allowReflections = false) {
+  constructor(sourceImg, n, outputW, outputH, {allowRotations = false, allowReflections = false, periodic = true}) {
     this.N = n;
     this.OUTPUT_W = outputW;
     this.OUTPUT_H = outputH;
@@ -30,12 +30,13 @@ class WaveFunctionCollapse {
     ];
     this.sourceImg = sourceImg;
     console.log('[wfc] Source image dimensions: ' + sourceImg.width + 'x' + sourceImg.height);  
-    this.extractPatternsWithSymmetries(this.sourceImg);
+    if (periodic) this.extractPatternsWithSymmetriesPeriodic(this.sourceImg);
+    else this.extractPatternsWithSymmetries(this.sourceImg);
     this.precomputeAdjacencies();
     this.resetGrid();
   }
 
-  extractPatternsWithSymmetries(img) {
+  extractPatternsWithSymmetriesPeriodic(img) {
     img.loadPixels();
     let imgW = img.width;
     let imgH = img.height;
@@ -46,6 +47,48 @@ class WaveFunctionCollapse {
           for (let px = 0; px < this.N; px++) {
             let sx = (x + px) % imgW;
             let sy = (y + py) % imgH;
+            let index = (sx + sy * imgW) * 4;
+
+            let r = img.pixels[index];
+            let g = img.pixels[index + 1];
+            let b = img.pixels[index + 2];
+            basePattern.push(`rgb(${r},${g},${b})`);
+          }
+        }
+
+        let variations = this.getSymmetries(basePattern);
+
+        for (let patternVariant of variations) {
+          let patternString = patternVariant.join(',');
+          let matchIndex = this.patterns.findIndex(p => p.join(',') === patternString);
+
+          if (matchIndex === -1) {
+            this.patterns.push(patternVariant);
+            this.weights.push(1);
+          } else {
+            this.weights[matchIndex]++;
+          }
+        }
+      }
+    }
+    console.log(`[wfc] Successfully compiled ${this.patterns.length} unique pattern structures.`);
+  }
+
+  extractPatternsWithSymmetries(img) {
+    img.loadPixels();
+    let imgW = img.width;
+    let imgH = img.height;
+    
+    // 1. Stop looping before the NxN pattern exceeds the image boundaries
+    for (let y = 0; y <= imgH - this.N; y++) {
+      for (let x = 0; x <= imgW - this.N; x++) {
+        let basePattern = [];
+        
+        for (let py = 0; py < this.N; py++) {
+          for (let px = 0; px < this.N; px++) {
+            // 2. Remove the modulo (%) operator
+            let sx = x + px;
+            let sy = y + py;
             let index = (sx + sy * imgW) * 4;
 
             let r = img.pixels[index];

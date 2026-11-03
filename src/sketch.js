@@ -4,18 +4,18 @@ let wfc;
 let sourceImg; // for best results, use a small image eg. 12x12, 16x16 or 32x32 pixels
 
 async function setup() {
-  new Canvas(80, 80, PIXELATED);
+  new Canvas(220, 50, PIXELATED);
   //sourceImg = await loadImage('samples/Angular.png');
-  sourceImg = await loadImage('samples/Flowers.png');
+  sourceImg = await loadImage('samples/Skyline 2.png');
   
-  wfc = new WaveFunctionCollapse(sourceImg, N, width, height, false, false);
+  wfc = new WaveFunctionCollapse(sourceImg, N, width, height, {allowRotations: false, allowReflections: false, periodic: true});
 }
 
 function draw() {
   background(128);
   // Speed up collapsing steps per frame
-  for (let step = 0; step < 50; step++) {
-    if (!wfc.nextStep()) {
+  for (let i = 0; i < 50; i++) {
+    if (wfc.nextStep() == false) {
       noLoop();
       break;
     }
