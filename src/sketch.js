@@ -4,10 +4,8 @@ let wfc;
 let sourceImg; // for best results, use a small image eg. 12x12, 16x16 or 32x32 pixels
 
 async function setup() {
-  new Canvas(220, 50, PIXELATED);
-  //sourceImg = await loadImage('samples/Angular.png');
-  sourceImg = await loadImage('samples/Skyline 2.png');
-  
+  new Canvas(80, 80, PIXELATED);
+  sourceImg = await loadImage('samples/Rooms.png');
   wfc = new WaveFunctionCollapse(sourceImg, N, width, height, {allowRotations: false, allowReflections: false, periodic: true});
 }
 
