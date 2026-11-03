@@ -3,7 +3,7 @@ Wave Function Collapse implementation (overlapping model) for p5.js, with a focu
 
 To use the Wave Function Collapse class in other projects:
 
-`<script src="https://cdn.jsdelivr.net/gh/davidbouchard/p5-grid/src/grid.js"></script>`
+`<script src="https://cdn.jsdelivr.net/gh/davidbouchard/p5-wfc/src/wfc.js"></script>`
 
 The class implements two cell selection algorithms: 
 
