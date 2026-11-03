@@ -1,2 +1,4 @@
 # p5-wfc
-Wave Function Collapse implementaton for p5.js
+Wave Function Collapse implementation for p5.js
+
+
